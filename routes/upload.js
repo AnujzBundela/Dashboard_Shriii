@@ -62,6 +62,5 @@ module.exports = router;
 
 
 
-
 // const authMiddleware = require("../middleware/authMiddleware");
 // router.put("/website", authMiddleware, website);

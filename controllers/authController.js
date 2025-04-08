@@ -38,19 +38,47 @@ const login = async (req, res) => {
       return res.status(400).json({ error: "Invalid credentials" });
     }
 
-    // Include isAdmin in the JWT payload
-    const token = jwt.sign(
-      { userId: user._id, isAdmin: user.isAdmin }, // Now includes isAdmin
-      process.env.JWT_SECRET, // Ensure you are using the correct secret key from .env
-      { expiresIn: "1h" }
-    );
+    const token = jwt.sign({ id: user._id },
+       process.env.JWT_SECRET,
+        { expiresIn: "1d" });
 
-    res.json({ message: "Login successful", token, isAdmin: user.isAdmin });
+res.json({
+  message: "Login successful",
+  token,
+  user: {
+    id: user._id,
+    username: user.username,
+    email: user.email
+  }
+});
 
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
-
 module.exports = { register, login };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ // // Include isAdmin in the JWT payload
+    // const token = jwt.sign(
+    //   { userId: user._id, isAdmin: user.isAdmin }, // Now includes isAdmin
+    //   process.env.JWT_SECRET, // Ensure you are using the correct secret key from .env
+    //   { expiresIn: "1h" }
+    // );
+
+    // res.json({ message: "Login successful", token, isAdmin: user.isAdmin });
