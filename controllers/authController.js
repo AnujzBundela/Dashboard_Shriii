@@ -6,7 +6,9 @@ const User = require("../models/User");
 const register = async (req, res) => {
   console.log("register");
   console.log(req.body);
-  const { username, email, password } = req.body;
+
+  const { username, email, password, repositoryUrl } = req.body; // Add Repository URL
+
   try {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -14,7 +16,14 @@ const register = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({ username, email, password: hashedPassword });
+
+    const newUser = new User({
+      username,
+      email,
+      password: hashedPassword,
+      repositoryUrl,  // Save Repo URL
+    });
+
     await newUser.save();
     res.json({ message: "User registered successfully" });
   } catch (err) {
@@ -27,30 +36,33 @@ const login = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
-    
+
     if (!user) {
       return res.status(400).json({ error: "User not found" });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
-    
+
     if (!isMatch) {
       return res.status(400).json({ error: "Invalid credentials" });
     }
 
-    const token = jwt.sign({ id: user._id },
-       process.env.JWT_SECRET,
-        { expiresIn: "1d" });
+    const token = jwt.sign(
+      { id: user._id },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
 
-res.json({
-  message: "Login successful",
-  token,
-  user: {
-    id: user._id,
-    username: user.username,
-    email: user.email
-  }
-});
+    res.json({
+      message: "Login successful",
+      token,
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        repositoryUrl: user.repositoryUrl,  // Send Repo URL in response
+      }
+    });
 
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -58,7 +70,6 @@ res.json({
 };
 
 module.exports = { register, login };
-
 
 
 

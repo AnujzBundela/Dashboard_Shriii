@@ -48,12 +48,19 @@ const getUserChanges = async (req, res) => {
 // ✅ Ye function tujhe banana tha:
 const website = async (req, res) => {
   try {
-    const latestChange = await UserChange.findOne().sort({ _id: -1 }); // latest entry
-    if (!latestChange) {
+    const userId = req.query.userId;  // frontend se query ke through userId ayega
+
+    if (!userId) {
+      return res.status(400).json({ error: "User ID is required" });
+    }
+
+    const userChange = await UserChange.findOne({ userId });
+
+    if (!userChange) {
       return res.json({ title: "Default Title", description: "Default Description", logo: "" });
     }
 
-    const lastData = latestChange.changes[latestChange.changes.length - 1];
+    const lastData = userChange.changes[userChange.changes.length - 1];
 
     res.json(lastData);
   } catch (error) {
