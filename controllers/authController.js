@@ -60,14 +60,16 @@ const login = async (req, res) => {
         id: user._id,
         username: user.username,
         email: user.email,
-        repositoryUrl: user.repositoryUrl,  // Send Repo URL in response
+        repositoryUrl: user.repositoryUrl,
       }
     });
 
   } catch (err) {
+    console.log("Error in Login API:", err);  // <-- Yeh Add Kar De
     res.status(500).json({ error: err.message });
   }
 };
+
 
 module.exports = { register, login };
 
