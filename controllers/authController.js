@@ -66,7 +66,7 @@ const login = async (req, res) => {
 
   } catch (err) {
     console.log("Error in Login API:", err);  // <-- Yeh Add Kar De
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ message : err.message });
   }
 };
 
