@@ -10,13 +10,17 @@ const app = express();
 app.use(express.json()); // ✅ JSON parsing enable
 app.use(express.urlencoded({ extended: true })); // ✅ Form data parsing enable
 
+const allowedOrigins = [
+  "https://anujzbundela.github.io",
+  "https://dashboardshriii-360.up.railway.app"
+];
 
-// CORS Setup
 app.use(cors({
-  origin: "*",
+  origin: allowedOrigins,
   methods: "GET,POST,PUT,DELETE",
-  allowedHeaders: "Content-Type,Authorization"
+  credentials: true,  // agar cookies ya tokens bhejne hai toh
 }));
+
 
 // API Routes
 app.use("/uploads", express.static("uploads"));
